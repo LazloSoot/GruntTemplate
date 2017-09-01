@@ -1,11 +1,18 @@
-# GruntTemplate
+# My grunt build
 
+#### Project structure:  
+![alt text](https://github.com/LazloSoot/GruntTemplate/blob/master/Screenshot_2.png  "Project structure")
 
-#### My grunt build
-
-Project structure: ![alt text](https://github.com/LazloSoot/GruntTemplate/blob/master/Screenshot_2.png  "Project structure"
-
+#### My tasks:
 ```javascript
+    grunt.registerTask('build', ['less', 'autoprefixer', 'postcss', 'csso', 'uglify','imagemin', 'symbols']);
+  
+    grunt.registerTask('build--watch', ['less', 'autoprefixer', 'postcss', 'csso', 'uglify','imagemin', 'symbols', 'watch']);
+    
+    grunt.registerTask('symbols', ['svgmin','svgstore']);
+  ```
+ #### Plagins: 
+ ```javascript
 "devDependencies": {
     "grunt-cli": "latest",
     "grunt": "latest",
