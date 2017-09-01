@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
 
+  require("load-grunt-tasks")(grunt);
     grunt.initConfig({
 
         watch: {
@@ -30,10 +31,38 @@ module.exports = function(grunt) {
 
                 tasks: ['uglify']
 
-            }
+            },
+          
+          images: {
+              
+                files: ['assets/img/**/*.jpg', 'assets/img/**/*.png', 'assets/img/**/*.gif'],
+            
+                tasks: ['imagemin']
+            
+          },
+          
+          sprites: {
+            
+            files: ['assets/img/icons/*.svg'],
+            
+            tasks: ['symbols']
+          }
 
         },
-
+        
+        postcss: {
+          style: {
+            options: {
+              processors: [
+                require("css-mqpacker")({
+                  sort: true
+                })
+              ]
+            },
+            src: "dist/css/*.css"
+          }
+        },
+      
         less: {
 
             development: {
@@ -90,6 +119,43 @@ module.exports = function(grunt) {
             }
 
         },
+        
+        imagemin: {
+          images: {
+            options: {
+              optimizationLevel: 3
+            },
+            files: [{
+              expand: true,
+              cwd: "assets/img/",
+              src: ["**/*.{png,jpg,gif}"],
+              dest: "dist/img/"
+            }]
+          }
+        },
+      
+        svgmin: {
+          symbols: {
+            files: [{
+              expand: true,
+              src: ["assets/img/icons/*.svg"]
+            }]
+          }
+        },
+        
+        svgstore: {
+          options: {
+            prefix: "icon-",
+            svg: {
+              style: "display: none"
+            }
+          },
+          symbols: {
+            files: {
+              "dist/img/symbols.svg": ["assets/img/icons/*.svg"]
+            }
+          }
+        },
 
         uglify: {
 
@@ -113,22 +179,9 @@ module.exports = function(grunt) {
 
     });
 
-
-
-
-
-    grunt.loadNpmTasks('grunt-contrib-watch');
-
-    grunt.loadNpmTasks('grunt-csso');
-
-    grunt.loadNpmTasks('grunt-contrib-less');
-
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-
-    grunt.loadNpmTasks('grunt-autoprefixer');
-
-
-
-    grunt.registerTask('default', ['less', 'autoprefixer', 'csso', 'uglify', 'watch']);
-
+    grunt.registerTask('build', ['less', 'autoprefixer', 'postcss', 'csso', 'uglify','imagemin', 'symbols']);
+  
+    grunt.registerTask('build--watch', ['less', 'autoprefixer', 'postcss', 'csso', 'uglify','imagemin', 'symbols', 'watch']);
+    
+    grunt.registerTask('symbols', ['svgmin','svgstore']);
 };
